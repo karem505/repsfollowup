@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Toast from '../components/Toast';
-import { userAPI, visitAPI } from '../utils/api';
+import { userAPI, visitAPI, getMockMode } from '../utils/api';
 import './AdminPanel.css';
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '';
 
 const AdminPanel = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('users');
   const [users, setUsers] = useState([]);
   const [visits, setVisits] = useState([]);
@@ -15,6 +17,7 @@ const AdminPanel = () => {
   const [toast, setToast] = useState(null);
   const [showAddUser, setShowAddUser] = useState(false);
   const [selectedVisit, setSelectedVisit] = useState(null);
+  const [isMockMode] = useState(getMockMode());
 
   const [newUser, setNewUser] = useState({
     name: '',
@@ -94,7 +97,13 @@ const AdminPanel = () => {
 
       <div className="container">
         <div className="admin-header">
-          <h2>Admin Panel</h2>
+          <div>
+            <h2>Admin Panel</h2>
+            {isMockMode && <span className="mock-badge">MOCK MODE</span>}
+          </div>
+          <button className="btn-switch-view" onClick={() => navigate('/dashboard')}>
+            Switch to Rep Dashboard
+          </button>
         </div>
 
         <div className="tabs">
@@ -214,7 +223,7 @@ const AdminPanel = () => {
                 {visits.map((visit) => (
                   <div key={visit._id} className="card visit-card">
                     <img
-                      src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${visit.imageUrl}`}
+                      src={isMockMode ? visit.imageUrl : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${visit.imageUrl}`}
                       alt={visit.placeName}
                       className="visit-image"
                     />
@@ -255,7 +264,7 @@ const AdminPanel = () => {
               </div>
               <div className="visit-details">
                 <img
-                  src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${selectedVisit.imageUrl}`}
+                  src={isMockMode ? selectedVisit.imageUrl : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${selectedVisit.imageUrl}`}
                   alt={selectedVisit.placeName}
                   className="detail-image"
                 />
