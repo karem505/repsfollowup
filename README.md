@@ -96,56 +96,54 @@ curl -X POST http://localhost:5000/api/auth/register \
 
 Or use a tool like Postman/Insomnia.
 
-## Railway Deployment
+## Netlify Deployment
 
 ### Prerequisites
-- Railway account
+- Netlify account (for frontend hosting)
+- Backend hosting service (Render, Railway, etc.)
 - MongoDB Atlas account (for production database)
 - Google Maps API key
 
-### Deploy to Railway
+### Quick Deployment Guide
 
-1. Install Railway CLI:
-```bash
-npm install -g @railway/cli
-```
+**Frontend (Netlify):**
+1. Go to [Netlify](https://www.netlify.com/) and create an account
+2. Click "Add new site" → "Import an existing project"
+3. Connect your GitHub repository
+4. Configure build settings:
+   - Base directory: `client`
+   - Build command: `npm install && npm run build`
+   - Publish directory: `build`
+5. Add environment variables in Netlify dashboard:
+   ```
+   REACT_APP_API_URL=https://your-backend-url.onrender.com/api
+   REACT_APP_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+   ```
 
-2. Login to Railway:
-```bash
-railway login
-```
+**Backend (Render recommended):**
+1. Go to [Render](https://render.com/) and create an account
+2. Click "New +" → "Web Service"
+3. Connect your GitHub repository
+4. Configure:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+5. Add environment variables:
+   ```
+   MONGODB_URI=your-mongodb-connection-string
+   JWT_SECRET=your-secure-random-string
+   NODE_ENV=production
+   CLIENT_URL=https://your-app-name.netlify.app
+   PORT=10000
+   ```
 
-3. Initialize project:
-```bash
-railway init
-```
-
-4. Add MongoDB database:
-   - Go to Railway dashboard
-   - Add a new service > Database > MongoDB
-   - Copy the connection string
-
-5. Set environment variables in Railway:
-   - Go to your project settings
-   - Add these variables:
-     ```
-     MONGODB_URI=your-railway-mongodb-connection-string
-     JWT_SECRET=your-secure-random-string
-     NODE_ENV=production
-     CLIENT_URL=your-railway-app-url
-     GOOGLE_MAPS_API_KEY=your-google-maps-api-key
-     ```
-
-6. Deploy:
-```bash
-railway up
-```
+**For detailed deployment instructions**, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### Post-Deployment
 
-1. Get your Railway app URL from the dashboard
-2. Update `CLIENT_URL` environment variable with your Railway app URL
-3. Create the first admin user using the `/api/auth/register` endpoint
+1. Get your Netlify frontend URL and backend URL
+2. Update `CLIENT_URL` in backend with Netlify URL
+3. Update `REACT_APP_API_URL` in Netlify with backend API URL
+4. Create the first admin user using the `/api/auth/register` endpoint
 
 ## API Endpoints
 
