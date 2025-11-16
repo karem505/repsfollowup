@@ -1,0 +1,35 @@
+name: Visit Tracker
+description: A full-stack MERN application for tracking representative visits with MongoDB and Google Maps integration
+icon: 📍
+services:
+  - name: web
+    type: web
+    env:
+      PORT: 5000
+      NODE_ENV: production
+      JWT_SECRET:
+        generate: true
+      MONGODB_URI:
+        serviceRef: mongodb
+      CLIENT_URL:
+        railway: true
+      GOOGLE_MAPS_API_KEY:
+        prompt: Enter your Google Maps API Key
+    build:
+      buildCommand: npm install && cd client && npm install && npm run build && cd ..
+    deploy:
+      startCommand: npm start
+      restartPolicyType: ON_FAILURE
+    healthcheck:
+      path: /api/health
+      interval: 30
+      timeout: 10
+  - name: mongodb
+    type: mongodb
+    plan: starter
+    env:
+      MONGO_INITDB_ROOT_USERNAME:
+        generate: true
+      MONGO_INITDB_ROOT_PASSWORD:
+        generate: true
+      MONGO_INITDB_DATABASE: visit-tracker
