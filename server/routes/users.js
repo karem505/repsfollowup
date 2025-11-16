@@ -1,5 +1,5 @@
 const express = require('express');
-const userService = require('../services/userService');
+const User = require('../models/User');
 const { auth, isAdmin } = require('../middleware/auth');
 
 const router = express.Router();
@@ -7,7 +7,7 @@ const router = express.Router();
 // Get all users (admin only)
 router.get('/', auth, isAdmin, async (req, res) => {
   try {
-    const users = await userService.getAllUsers();
+    const users = await User.find().sort({ createdAt: -1 });
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -20,18 +20,20 @@ router.post('/', auth, isAdmin, async (req, res) => {
     const { name, email, password, role } = req.body;
 
     // Check if user already exists
-    const existingUser = await userService.findByEmail(email);
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
     // Create new user
-    const user = await userService.createUser({
+    const user = new User({
       name,
       email,
       password,
       role: role || 'rep'
     });
+
+    await user.save();
 
     res.status(201).json(user);
   } catch (error) {
@@ -42,7 +44,10 @@ router.post('/', auth, isAdmin, async (req, res) => {
 // Delete user (admin only)
 router.delete('/:id', auth, isAdmin, async (req, res) => {
   try {
-    await userService.deleteUser(req.params.id);
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
