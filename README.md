@@ -20,7 +20,7 @@ A mobile-first web application for tracking representative visits to clients wit
 
 **Backend:**
 - Node.js & Express
-- MongoDB with Mongoose
+- Supabase (PostgreSQL database + Storage)
 - JWT Authentication
 - Multer for file uploads
 
@@ -35,7 +35,7 @@ A mobile-first web application for tracking representative visits to clients wit
 
 ### Prerequisites
 - Node.js 18+ and npm
-- MongoDB instance (local or cloud like MongoDB Atlas)
+- Supabase account (free tier available at https://supabase.com)
 - Google Maps API key
 
 ### Environment Variables
@@ -44,12 +44,15 @@ Create a `.env` file in the root directory:
 
 ```env
 PORT=5000
-MONGODB_URI=your-mongodb-connection-string
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 JWT_SECRET=your-secret-key-change-this-in-production
 NODE_ENV=development
 CLIENT_URL=http://localhost:3000
 GOOGLE_MAPS_API_KEY=your-google-maps-api-key
 ```
+
+**Important:** See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed Supabase setup instructions.
 
 Create a `.env` file in the `client` directory:
 
@@ -101,7 +104,7 @@ Or use a tool like Postman/Insomnia.
 ### Prerequisites
 - Netlify account (for frontend hosting)
 - Backend hosting service (Render, Railway, etc.)
-- MongoDB Atlas account (for production database)
+- Supabase project (for database and file storage)
 - Google Maps API key
 
 ### Quick Deployment Guide
@@ -129,7 +132,8 @@ Or use a tool like Postman/Insomnia.
    - Start Command: `npm start`
 5. Add environment variables:
    ```
-   MONGODB_URI=your-mongodb-connection-string
+   SUPABASE_URL=https://your-project-ref.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
    JWT_SECRET=your-secure-random-string
    NODE_ENV=production
    CLIENT_URL=https://your-app-name.netlify.app
