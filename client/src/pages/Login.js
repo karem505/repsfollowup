@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Toast from '../components/Toast';
 import './Login.css';
@@ -10,23 +9,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const user = await login(email, password);
+      await login(email, password);
       setToast({ message: 'Login successful!', type: 'success' });
-
-      setTimeout(() => {
-        if (user.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/dashboard');
-        }
-      }, 500);
+      // Navigation will happen automatically via App.js routing when user state updates
     } catch (error) {
       setToast({
         message: error.response?.data?.error || 'Login failed. Please try again.',
