@@ -19,9 +19,9 @@ export const toggleMockMode = () => {
 // Get current mock mode status
 export const getMockMode = () => isMockMode();
 
-// Initialize mock mode to true by default for testing
+// Initialize mock mode to false by default for production
 if (localStorage.getItem('mockMode') === null) {
-  localStorage.setItem('mockMode', 'true');
+  localStorage.setItem('mockMode', 'false');
 }
 
 const api = axios.create({

@@ -1,0 +1,46 @@
+# Node modules
+node_modules
+client/node_modules
+npm-debug.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Build files
+client/build
+dist
+
+# Uploads (will be handled by volumes)
+uploads/*
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+coverage
+.nyc_output
+
+# Railway/deployment specific
+railway.json
+railway.toml
+netlify.toml
+Procfile
+template.yaml

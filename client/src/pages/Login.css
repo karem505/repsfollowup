@@ -70,54 +70,6 @@
   background: #ccc;
 }
 
-.mock-info {
-  padding: 20px 30px 30px;
-  background: #f8f9fa;
-  border-top: 2px dashed #e0e0e0;
-}
-
-.mock-badge-login {
-  background: #FF9800;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.test-accounts {
-  background: white;
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-.test-accounts-title {
-  margin: 0 0 12px 0;
-  font-size: 13px;
-  color: #666;
-  font-weight: 500;
-}
-
-.test-account {
-  padding: 8px 12px;
-  background: #f5f5f5;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #333;
-}
-
-.test-account:last-child {
-  margin-bottom: 0;
-}
-
-.test-account strong {
-  color: #667eea;
-}
-
 @media (max-width: 480px) {
   .login-card {
     border-radius: 12px;

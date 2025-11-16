@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getMockMode } from '../utils/api';
 import Toast from '../components/Toast';
 import './Login.css';
 
@@ -10,7 +9,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
-  const [isMockMode] = useState(getMockMode());
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -88,21 +86,6 @@ const Login = () => {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-
-        {isMockMode && (
-          <div className="mock-info">
-            <div className="mock-badge-login">MOCK MODE - NO BACKEND REQUIRED</div>
-            <div className="test-accounts">
-              <p className="test-accounts-title">Test Accounts (any password works):</p>
-              <div className="test-account">
-                <strong>Rep:</strong> john@example.com
-              </div>
-              <div className="test-account">
-                <strong>Admin:</strong> admin@example.com
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
