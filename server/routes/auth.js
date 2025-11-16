@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const userService = require('../services/userService');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -11,24 +11,22 @@ router.post('/register', async (req, res) => {
     const { name, email, password, role } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await userService.findByEmail(email);
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
     // Create new user
-    const user = new User({
+    const user = await userService.createUser({
       name,
       email,
       password,
       role: role || 'rep'
     });
 
-    await user.save();
-
     // Generate token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -47,27 +45,30 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ email });
+    // Find user (this returns user WITH password for authentication)
+    const user = await userService.findByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     // Check password
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await userService.comparePassword(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     // Generate token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
+    // Remove password from response
+    const sanitizedUser = userService.sanitizeUser(user);
+
     res.json({
-      user,
+      user: sanitizedUser,
       token
     });
   } catch (error) {
