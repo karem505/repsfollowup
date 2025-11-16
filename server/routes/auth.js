@@ -10,25 +10,22 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered' });
+    // Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Name, email, and password are required' });
     }
 
     // Create new user
-    const user = new User({
+    const user = await User.create({
       name,
       email,
       password,
       role: role || 'rep'
     });
 
-    await user.save();
-
     // Generate token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -38,6 +35,9 @@ router.post('/register', async (req, res) => {
       token
     });
   } catch (error) {
+    if (error.message === 'Email already exists') {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
     res.status(400).json({ error: error.message });
   }
 });
@@ -47,27 +47,35 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ email });
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    // Find user (includes password for comparison)
+    const user = await User.findByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     // Check password
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await User.comparePassword(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    // Remove password from user object
+    const sanitizedUser = User.sanitize(user);
+
     // Generate token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     res.json({
-      user,
+      user: sanitizedUser,
       token
     });
   } catch (error) {

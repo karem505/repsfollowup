@@ -1,9 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+const { initializeDatabase } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const visitRoutes = require('./routes/visits');
@@ -40,21 +40,25 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Database connection
+// Database connection and server startup
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/visit-tracker';
 
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    console.log('Connected to MongoDB');
+const startServer = async () => {
+  try {
+    // Initialize PostgreSQL database
+    await initializeDatabase();
+
+    // Start server
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running on port ${PORT}`);
     });
-  })
-  .catch((error) => {
-    console.error('MongoDB connection error:', error);
+  } catch (error) {
+    console.error('Failed to start server:', error);
     process.exit(1);
-  });
+  }
+};
+
+startServer();
 
 // Error handling
 app.use((err, req, res, next) => {

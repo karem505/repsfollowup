@@ -15,20 +15,17 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Image is required' });
     }
 
-    const visit = new Visit({
-      userId: req.user._id,
+    if (!placeName || !latitude || !longitude) {
+      return res.status(400).json({ error: 'Place name, latitude, and longitude are required' });
+    }
+
+    const visit = await Visit.create({
+      userId: req.user.id,
       placeName,
-      location: {
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude)
-      },
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
       imageUrl: `/uploads/${req.file.filename}`
     });
-
-    await visit.save();
-
-    // Populate user info
-    await visit.populate('userId', 'name email');
 
     res.status(201).json(visit);
   } catch (error) {
@@ -39,9 +36,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 // Get visits for current user
 router.get('/my-visits', auth, async (req, res) => {
   try {
-    const visits = await Visit.find({ userId: req.user._id })
-      .sort({ createdAt: -1 })
-      .populate('userId', 'name email');
+    const visits = await Visit.findByUserId(req.user.id);
     res.json(visits);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -51,9 +46,7 @@ router.get('/my-visits', auth, async (req, res) => {
 // Get all visits (admin only)
 router.get('/all', auth, isAdmin, async (req, res) => {
   try {
-    const visits = await Visit.find()
-      .sort({ createdAt: -1 })
-      .populate('userId', 'name email role');
+    const visits = await Visit.findAll();
     res.json(visits);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -63,9 +56,7 @@ router.get('/all', auth, isAdmin, async (req, res) => {
 // Get visits by user ID (admin only)
 router.get('/user/:userId', auth, isAdmin, async (req, res) => {
   try {
-    const visits = await Visit.find({ userId: req.params.userId })
-      .sort({ createdAt: -1 })
-      .populate('userId', 'name email');
+    const visits = await Visit.findByUserId(req.params.userId);
     res.json(visits);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -82,11 +73,11 @@ router.delete('/:id', auth, async (req, res) => {
     }
 
     // Only admin or visit owner can delete
-    if (req.user.role !== 'admin' && visit.userId.toString() !== req.user._id.toString()) {
+    if (req.user.role !== 'admin' && visit.user_id !== req.user.id) {
       return res.status(403).json({ error: 'Not authorized to delete this visit' });
     }
 
-    await Visit.findByIdAndDelete(req.params.id);
+    await Visit.deleteById(req.params.id);
     res.json({ message: 'Visit deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
