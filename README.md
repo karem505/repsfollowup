@@ -2,6 +2,14 @@
 
 A mobile-first web application for tracking representative visits to clients with location and photo capture.
 
+## 🚀 Quick Deploy
+
+Deploy this application to Railway with one click:
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template)
+
+For detailed Railway deployment instructions, see [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)
+
 ## Features
 
 ### For Representatives
@@ -20,7 +28,7 @@ A mobile-first web application for tracking representative visits to clients wit
 
 **Backend:**
 - Node.js & Express
-- Supabase (PostgreSQL database + Storage)
+- MongoDB (Database)
 - JWT Authentication
 - Multer for file uploads
 
@@ -35,7 +43,7 @@ A mobile-first web application for tracking representative visits to clients wit
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Supabase account (free tier available at https://supabase.com)
+- MongoDB (local installation or cloud service like MongoDB Atlas)
 - Google Maps API key
 
 ### Environment Variables
@@ -44,15 +52,12 @@ Create a `.env` file in the root directory:
 
 ```env
 PORT=5000
-SUPABASE_URL=https://your-project-ref.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+MONGODB_URI=mongodb://localhost:27017/visit-tracker
 JWT_SECRET=your-secret-key-change-this-in-production
 NODE_ENV=development
 CLIENT_URL=http://localhost:3000
 GOOGLE_MAPS_API_KEY=your-google-maps-api-key
 ```
-
-**Important:** See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed Supabase setup instructions.
 
 Create a `.env` file in the `client` directory:
 
@@ -99,12 +104,22 @@ curl -X POST http://localhost:5000/api/auth/register \
 
 Or use a tool like Postman/Insomnia.
 
-## Netlify Deployment
+## Deployment Options
 
-### Prerequisites
+### Option 1: Railway (Recommended - One-Click Deploy)
+
+Railway provides the easiest deployment with automatic MongoDB setup:
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template)
+
+**See [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md) for complete Railway deployment guide.**
+
+### Option 2: Netlify + Render
+
+**Prerequisites:**
 - Netlify account (for frontend hosting)
-- Backend hosting service (Render, Railway, etc.)
-- Supabase project (for database and file storage)
+- Backend hosting service (Render or similar)
+- MongoDB Atlas account (for database)
 - Google Maps API key
 
 ### Quick Deployment Guide
@@ -132,12 +147,12 @@ Or use a tool like Postman/Insomnia.
    - Start Command: `npm start`
 5. Add environment variables:
    ```
-   SUPABASE_URL=https://your-project-ref.supabase.co
-   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   MONGODB_URI=your-mongodb-atlas-connection-string
    JWT_SECRET=your-secure-random-string
    NODE_ENV=production
    CLIENT_URL=https://your-app-name.netlify.app
    PORT=10000
+   GOOGLE_MAPS_API_KEY=your-google-maps-api-key
    ```
 
 **For detailed deployment instructions**, see [DEPLOYMENT.md](./DEPLOYMENT.md)
