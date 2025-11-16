@@ -1,6 +1,8 @@
 # Netlify configuration
-# Note: Netlify will host the React frontend as a static site
-# The Node.js backend should be deployed separately (e.g., Render, Railway, etc.)
+# This deploys the React frontend as a static site
+# Mock mode is enabled by default - no backend required for testing
+# To disable mock mode and use a real backend, set the environment variable:
+#   REACT_APP_API_URL = "your-backend-url"
 
 [build]
   # Build the React frontend
@@ -10,7 +12,12 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  REACT_APP_API_URL = "${API_URL}"
+  CI = "false"  # Don't treat warnings as errors
+  # Optional: Uncomment and set this in Netlify UI if you want to use a real backend
+  # REACT_APP_API_URL = "https://your-backend-api.com/api"
+
+  # Optional: Set Google Maps API key if you have one
+  # REACT_APP_GOOGLE_MAPS_API_KEY = "your-google-maps-key"
 
 # Redirect all routes to index.html for React Router to handle
 [[redirects]]
