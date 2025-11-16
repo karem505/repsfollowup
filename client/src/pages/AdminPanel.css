@@ -34,18 +34,6 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-.mock-badge {
-  display: inline-block;
-  background: #FF9800;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  margin-left: 12px;
-  vertical-align: middle;
-}
-
 .tabs {
   display: flex;
   gap: 10px;

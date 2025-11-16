@@ -3,7 +3,7 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Toast from '../components/Toast';
-import { visitAPI, getMockMode } from '../utils/api';
+import { visitAPI } from '../utils/api';
 import './Dashboard.css';
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '';
@@ -15,7 +15,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [selectedVisit, setSelectedVisit] = useState(null);
-  const [isMockMode] = useState(getMockMode());
 
   // New visit form
   const [placeName, setPlaceName] = useState('');
@@ -176,10 +175,7 @@ const Dashboard = () => {
 
       <div className="container">
         <div className="dashboard-header">
-          <div>
-            <h2>My Dashboard</h2>
-            {isMockMode && <span className="mock-badge">MOCK MODE</span>}
-          </div>
+          <h2>My Dashboard</h2>
           <button className="btn-switch-view" onClick={() => navigate('/admin')}>
             Switch to Admin Panel
           </button>
@@ -297,7 +293,7 @@ const Dashboard = () => {
                 {visits.map((visit) => (
                   <div key={visit._id} className="card visit-card">
                     <img
-                      src={isMockMode ? visit.imageUrl : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${visit.imageUrl}`}
+                      src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${visit.imageUrl}`}
                       alt={visit.placeName}
                       className="visit-image"
                     />
@@ -355,7 +351,7 @@ const Dashboard = () => {
               </div>
               <div className="visit-details">
                 <img
-                  src={isMockMode ? selectedVisit.imageUrl : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${selectedVisit.imageUrl}`}
+                  src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${selectedVisit.imageUrl}`}
                   alt={selectedVisit.placeName}
                   className="detail-image"
                 />
