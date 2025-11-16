@@ -3,6 +3,7 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Toast from '../components/Toast';
+import RepsTimeline from '../components/RepsTimeline';
 import { userAPI, visitAPI, getMockMode } from '../utils/api';
 import './AdminPanel.css';
 
@@ -29,9 +30,10 @@ const AdminPanel = () => {
   useEffect(() => {
     if (activeTab === 'users') {
       fetchUsers();
-    } else {
+    } else if (activeTab === 'visits') {
       fetchVisits();
     }
+    // No fetch needed for timeline tab - component handles its own data
   }, [activeTab]);
 
   const fetchUsers = async () => {
@@ -118,6 +120,12 @@ const AdminPanel = () => {
             onClick={() => setActiveTab('visits')}
           >
             All Visits
+          </button>
+          <button
+            className={`tab ${activeTab === 'timeline' ? 'active' : ''}`}
+            onClick={() => setActiveTab('timeline')}
+          >
+            Reps Timeline
           </button>
         </div>
 
@@ -253,6 +261,10 @@ const AdminPanel = () => {
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === 'timeline' && (
+          <RepsTimeline />
         )}
 
         {selectedVisit && GOOGLE_MAPS_API_KEY && (
