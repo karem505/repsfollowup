@@ -1,0 +1,19 @@
+# Netlify configuration
+# Note: Netlify will host the React frontend as a static site
+# The Node.js backend should be deployed separately (e.g., Render, Railway, etc.)
+
+[build]
+  # Build the React frontend
+  base = "client"
+  command = "npm install && npm run build"
+  publish = "build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  REACT_APP_API_URL = "${API_URL}"
+
+# Redirect all routes to index.html for React Router to handle
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
