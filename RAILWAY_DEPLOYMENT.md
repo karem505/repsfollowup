@@ -1,6 +1,6 @@
 # Railway Deployment Guide
 
-This project is configured as a Railway template for easy one-click deployment with PostgreSQL.
+This project is optimized for Railway deployment using Docker for maximum reliability and performance. The application uses a single-container architecture that serves both the React frontend and Node.js backend.
 
 ## Quick Deploy
 
@@ -177,14 +177,25 @@ If you want to deploy manually instead of using the template:
 
 ## Build Process
 
-Railway automatically runs:
+Railway uses Docker to build and deploy your application:
 
-1. `npm install` - Install backend dependencies
-2. `cd client && npm install` - Install frontend dependencies
-3. `REACT_APP_API_URL=https://${{RAILWAY_PUBLIC_DOMAIN}}/api npm run build` - Build React with correct API URL
-4. `npm start` - Start the Express server
+1. **Multi-stage Docker build:**
+   - Stage 1: Builds the React frontend with the correct API URL
+   - Stage 2: Creates production backend image with built frontend assets
 
-The Express server serves both the API and the built React application.
+2. **Configuration files:**
+   - `Dockerfile` - Optimized multi-stage build for Railway
+   - `railway.json` - Railway deployment configuration (Docker mode)
+   - `.dockerignore` - Optimizes build by excluding unnecessary files
+
+3. **The process:**
+   - Builds React app with `REACT_APP_API_URL` set correctly
+   - Installs only production Node.js dependencies
+   - Copies built React files into the backend container
+   - Creates non-root user for security
+   - Sets up health checks for monitoring
+
+The Express server serves both the API and the built React application from a single container.
 
 ## Database Connection
 
@@ -199,14 +210,35 @@ Railway automatically populates this from the Postgres service.
 
 ## Configuration Files Explained
 
+### Dockerfile
+**Optimized multi-stage Dockerfile for Railway:**
+- Stage 1: Builds React frontend with proper environment variables
+- Stage 2: Production backend with built frontend assets
+- Features: Non-root user, dumb-init for signal handling, health checks
+- Optimized for fast builds and small image size
+
 ### railway.json
-JSON-based configuration for Railway deployment settings.
+**JSON-based Railway deployment configuration:**
+- Sets builder to "DOCKERFILE" (uses Docker instead of Nixpacks)
+- Defines build arguments for React environment variables
+- Configures health checks and restart policies
+- More reliable than Nixpacks for this stack
 
 ### railway.toml
-TOML-based configuration with build and deploy commands.
+**TOML-based Railway configuration:**
+- Alternative format to railway.json (Railway uses either)
+- Same settings as railway.json in TOML format
+- Includes build args and deploy settings
+
+### .dockerignore
+**Optimizes Docker build:**
+- Excludes node_modules (installed during build)
+- Excludes development files and caches
+- Reduces build context size
+- Speeds up builds significantly
 
 ### template.yaml
-Defines the Railway template for one-click deployment, including:
+**Railway template for one-click deployment:**
 - Service definitions (web app + PostgreSQL)
 - Environment variable references
 - Build and deploy commands

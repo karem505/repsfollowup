@@ -1,31 +1,42 @@
-# Node modules
-node_modules
-client/node_modules
-npm-debug.log
+# Dependencies
+node_modules/
+client/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
 
-# Environment files
+# Environment files (Railway injects these at runtime)
 .env
 .env.local
 .env.*.local
+.env.development
+.env.test
+.env.production
+.env.docker
+.env.railway
 
 # Git
-.git
+.git/
 .gitignore
+.gitattributes
 
 # Documentation
 *.md
-!README.md
 
-# Build files
-client/build
-dist
+# Build files (we build inside Docker)
+client/build/
+client/.pnp
+client/.pnp.js
+dist/
 
-# Uploads (will be handled by volumes)
+# Uploads directory (Railway will handle persistent storage)
 uploads/*
+!uploads/.gitkeep
 
 # IDE files
-.vscode
-.idea
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
@@ -34,13 +45,30 @@ uploads/*
 .DS_Store
 Thumbs.db
 
-# Test files
-coverage
-.nyc_output
+# Testing
+coverage/
+.nyc_output/
+*.test.js
+*.spec.js
 
-# Railway/deployment specific
-railway.json
-railway.toml
+# Logs
+logs/
+*.log
+
+# Docker files for local development
+Dockerfile.backend
+Dockerfile.frontend
+docker-compose.yml
+docker-compose.*.yml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+.cache/
+.parcel-cache/
+
+# Other deployment configs
 netlify.toml
 Procfile
 template.yaml
