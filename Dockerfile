@@ -35,7 +35,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci --omit=dev --prefer-offline --no-audit
+RUN npm install --omit=dev --prefer-offline --no-audit
 
 # Copy backend source
 COPY server ./server
